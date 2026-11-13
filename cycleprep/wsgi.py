@@ -1,0 +1,8 @@
+"""WSGI config for the CyclePrep project."""
+import os
+
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cycleprep.settings')
+
+application = get_wsgi_application()

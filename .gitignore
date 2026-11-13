@@ -1,0 +1,24 @@
+# Secrets — never commit these
+.env
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Uploaded files (profile photos)
+media/
+
+# Local database / logs
+db.sqlite3
+*.log
+
+# Editors and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
