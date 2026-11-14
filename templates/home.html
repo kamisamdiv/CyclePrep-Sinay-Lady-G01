@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}CyclePrep: Period Prep Tracker{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>CyclePrep</h1>
+    <p>A simple heads-up before your period arrives, so you can restock supplies,
+       prepare pain relief, and plan around exams and activities.</p>
+    {% if not user.is_authenticated %}
+        <a class="button" href="{% url 'register' %}">Create an account</a>
+    {% endif %}
+</section>
+{% endblock %}
