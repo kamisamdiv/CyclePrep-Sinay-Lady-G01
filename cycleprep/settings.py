@@ -114,5 +114,11 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
+# Authentication
+LOGIN_URL = 'login'                 # where @login_required sends logged-out users
+LOGIN_REDIRECT_URL = 'dashboard'    # after login, go to the role-based redirect
+LOGOUT_REDIRECT_URL = 'login'
+
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
