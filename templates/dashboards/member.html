@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard | CyclePrep{% endblock %}
+
+{% block content %}
+<h1>Hello, {{ user.first_name|default:user.username }}</h1>
+<p class="muted">Member dashboard · Cycle type: {{ profile.get_cycle_type_display }}</p>
+
+<div class="grid">
+    <section class="card">
+        {% if profile.cycle_type == 'regular' %}
+            <h2>Next period</h2>
+            <p class="stat">Not enough data yet</p>
+            <p class="muted">Your estimated next start date will appear here once you log a cycle.</p>
+        {% else %}
+            <h2>Since your last period</h2>
+            <p class="stat">Not enough data yet</p>
+            <p class="muted">The days since your last period and your likely cycle phase will
+               appear here once you log a cycle.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Log a cycle</h2>
+        <p class="muted">Record a start and end date in a few seconds.</p>
+        <button class="button" type="button" disabled>Coming soon</button>
+    </section>
+
+    <section class="card">
+        <h2>Reminders</h2>
+        <p class="muted">You will get a heads-up 2 to 3 days before your predicted start date
+           so you can restock supplies and prepare.</p>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | CyclePrep{% endblock %}
+
+{% block role_nav %}
+    {% if user.is_staff %}<a href="{% url 'admin:index' %}">Site admin</a>{% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>Admin dashboard</h1>
+<p class="muted">Overview of CyclePrep accounts.</p>
+
+<div class="grid">
+    <section class="card">
+        <h2>Total users</h2>
+        <p class="stat">{{ total_users }}</p>
+        <p class="muted">{{ member_count }} member{{ member_count|pluralize }},
+           {{ admin_count }} admin{{ admin_count|pluralize }}</p>
+    </section>
+    <section class="card">
+        <h2>Regular cycles</h2>
+        <p class="stat">{{ regular_count }}</p>
+        <p class="muted">members</p>
+    </section>
+    <section class="card">
+        <h2>Irregular cycles</h2>
+        <p class="stat">{{ irregular_count }}</p>
+        <p class="muted">members</p>
+    </section>
+</div>
+
+<section class="card">
+    <h2>User accounts</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Cycle type</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in users %}
+                    <tr>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.get_full_name|default:"-" }}</td>
+                        <td>{{ account.email|default:"-" }}</td>
+                        <td>{{ account.profile.get_role_display }}</td>
+                        <td>{% if account.profile.role == 'member' %}{{ account.profile.get_cycle_type_display }}{% else %}-{% endif %}</td>
+                        <td>{{ account.date_joined|date:"M j, Y" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No users yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
