@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 
 from .decorators import get_profile, role_required
-from .forms import RegistrationForm
+from .forms import ProfileUpdateForm, RegistrationForm, UserUpdateForm
 from .models import Profile
 
 
@@ -78,3 +78,37 @@ def admin_dashboard(request):
         'users': User.objects.select_related('profile').order_by('-date_joined'),
     }
     return render(request, 'dashboards/admin.html', context)
+
+
+@login_required
+def profile(request):
+    """Show the logged-in user's own profile.
+
+    There is no user id in the URL, so nobody can open another user's profile.
+    """
+    return render(request, 'accounts/profile.html', {'profile': get_profile(request.user)})
+
+
+@login_required
+def profile_edit(request):
+    """Let the logged-in user update their own profile."""
+    user_profile = get_profile(request.user)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was updated.')
+            return redirect('profile')
+        messages.error(request, 'Please correct the errors below.')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=user_profile)
+
+    return render(
+        request,
+        'accounts/profile_edit.html',
+        {'user_form': user_form, 'profile_form': profile_form},
+    )

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile | CyclePrep{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+    <h1>Edit profile</h1>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{ user_form.non_field_errors }}
+        {{ profile_form.non_field_errors }}
+
+        {% for field in user_form %}
+            <div class="field">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+
+        {% for field in profile_form %}
+            <div class="field">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.name == 'profile_photo' %}
+                    <small class="help">JPG or PNG, 2 MB or smaller.</small>
+                {% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+
+        <button class="button" type="submit">Save changes</button>
+        <a class="button secondary" href="{% url 'profile' %}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

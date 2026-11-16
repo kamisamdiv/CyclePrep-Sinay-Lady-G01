@@ -10,4 +10,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_redirect, name='dashboard'),
     path('dashboard/member/', views.member_dashboard, name='member_dashboard'),
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
 ]

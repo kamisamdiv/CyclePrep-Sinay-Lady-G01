@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile | CyclePrep{% endblock %}
+
+{% block content %}
+<section class="card profile-card">
+    <div class="profile-header">
+        {% if profile.profile_photo %}
+            <img class="avatar" src="{{ profile.profile_photo.url }}" alt="Profile photo">
+        {% else %}
+            <div class="avatar avatar-placeholder">{{ user.first_name|default:user.username|slice:":1"|upper }}</div>
+        {% endif %}
+        <div>
+            <h1>{{ user.get_full_name|default:user.username }}</h1>
+            <p class="muted">@{{ user.username }} · {{ profile.get_role_display }}</p>
+        </div>
+    </div>
+
+    <dl class="details">
+        <dt>Email</dt>
+        <dd>{{ user.email|default:"Not set" }}</dd>
+
+        <dt>Contact number</dt>
+        <dd>{{ profile.contact_number|default:"Not set" }}</dd>
+
+        {% if profile.role == 'member' %}
+            <dt>Cycle type</dt>
+            <dd>{{ profile.get_cycle_type_display }}</dd>
+        {% endif %}
+
+        <dt>Member since</dt>
+        <dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+    </dl>
+
+    <a class="button" href="{% url 'profile_edit' %}">Edit profile</a>
+</section>
+{% endblock %}
