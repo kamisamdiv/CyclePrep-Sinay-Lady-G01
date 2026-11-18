@@ -4,27 +4,103 @@
 
 {% block content %}
 <h1>Hello, {{ user.first_name|default:user.username }}</h1>
-<p class="muted">Member dashboard · Cycle type: {{ profile.get_cycle_type_display }}</p>
+<p class="muted">Member dashboard · Cycle type: {{ profile.get_cycle_type_display }}
+   (<a href="{% url 'profile_edit' %}">change</a>)</p>
+
+{% if prediction and prediction.show_reminder %}
+    <div class="reminder">
+        <strong>Heads-up: your period is expected
+            {% if prediction.days_until > 0 %}in {{ prediction.days_until }} day{{ prediction.days_until|pluralize }}{% elif prediction.days_until == 0 %}today{% else %}any day now{% endif %}.</strong>
+        Restock pads or tampons, pack pain relief, and plan around exams or long outings.
+    </div>
+{% elif status and status.show_reminder %}
+    <div class="reminder">
+        <strong>Heads-up: based on your average cycle of {{ status.cycle_length }} days, your period could start soon.</strong>
+        Keep supplies and pain relief with you.
+    </div>
+{% endif %}
+
+{% if ongoing_log %}
+    <div class="message info">
+        You have an ongoing period that started on {{ ongoing_log.start_date|date:"F j" }}.
+        <a href="{% url 'cycle_update' ongoing_log.pk %}">Add the end date</a> when it ends.
+    </div>
+{% endif %}
 
 <div class="grid">
-    <section class="card">
-        {% if profile.cycle_type == 'regular' %}
+    {% if profile.cycle_type == 'regular' %}
+        <section class="card highlight">
             <h2>Next period</h2>
-            <p class="stat">Not enough data yet</p>
-            <p class="muted">Your estimated next start date will appear here once you log a cycle.</p>
-        {% else %}
+            {% if prediction %}
+                {% if prediction.on_period %}
+                    <p class="stat">On your period</p>
+                    <p class="muted">Your next one is expected around {{ prediction.next_start|date:"F j" }}.</p>
+                {% elif prediction.is_late %}
+                    <p class="stat">Running late</p>
+                    <p class="muted">It was expected between {{ prediction.window_start|date:"M j" }} and
+                       {{ prediction.window_end|date:"M j" }}. Log it as soon as it starts.</p>
+                {% else %}
+                    <p class="stat">{{ prediction.next_start|date:"F j" }}</p>
+                    <p>{% if prediction.days_until > 0 %}In {{ prediction.days_until }} day{{ prediction.days_until|pluralize }}{% elif prediction.days_until == 0 %}Expected today{% else %}Any day now{% endif %}</p>
+                    <p class="muted">Likely between {{ prediction.window_start|date:"M j" }} and
+                       {{ prediction.window_end|date:"M j" }}.</p>
+                {% endif %}
+                <p class="small muted">
+                    {% if prediction.uses_history %}Based on your average cycle of {{ prediction.cycle_length }} days.
+                    {% else %}Based on the typical 22 to 28 day range. Log more periods for a personal estimate.{% endif %}
+                </p>
+            {% else %}
+                <p class="stat">No data yet</p>
+                <p class="muted">Log your most recent period to see when the next one is expected.</p>
+            {% endif %}
+        </section>
+    {% else %}
+        <section class="card highlight">
             <h2>Since your last period</h2>
-            <p class="stat">Not enough data yet</p>
-            <p class="muted">The days since your last period and your likely cycle phase will
-               appear here once you log a cycle.</p>
-        {% endif %}
-    </section>
+            {% if status %}
+                <p class="stat">{{ status.days_since }} day{{ status.days_since|pluralize }}</p>
+                <p class="muted">
+                    {% if status.months_since %}About {{ status.months_since }} month{{ status.months_since|pluralize }} · {% endif %}
+                    Started {{ status.last_start|date:"F j, Y" }}
+                </p>
+                <p><span class="phase phase-{{ status.phase_key }}">{{ status.phase_name }} phase</span>
+                   <span class="muted">· cycle day {{ status.cycle_day }}</span></p>
+                <p class="muted">{{ status.phase_note }}</p>
+                <p class="small muted">
+                    {% if status.uses_history %}Estimated from your average cycle of {{ status.cycle_length }} days.
+                    {% else %}Estimated from a typical 28-day cycle.{% endif %}
+                </p>
+            {% else %}
+                <p class="stat">No data yet</p>
+                <p class="muted">Log your most recent period to see how long it has been and your likely phase.</p>
+            {% endif %}
+        </section>
+    {% endif %}
 
     <section class="card">
         <h2>Log a period</h2>
-        <p class="muted">Record a start and end date in a few seconds.</p>
+        <p class="muted">Takes a few seconds. The start date is already set to today.</p>
         <a class="button" href="{% url 'cycle_create' %}">Log a period</a>
-        <a class="button secondary" href="{% url 'cycle_list' %}">My logs</a>
+        <p class="small muted">
+            {{ log_count }} period{{ log_count|pluralize }} logged{% if average_length %} · average cycle {{ average_length }} days{% endif %}
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Recent logs</h2>
+        {% if recent_logs %}
+            <ul class="plain-list">
+                {% for log in recent_logs %}
+                    <li>
+                        {{ log.start_date|date:"M j" }}
+                        {% if log.end_date %}to {{ log.end_date|date:"M j" }}{% else %}<span class="badge">Ongoing</span>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'cycle_list' %}">View all logs</a>
+        {% else %}
+            <p class="muted">No periods logged yet.</p>
+        {% endif %}
     </section>
 
     <section class="card">
@@ -32,11 +108,7 @@
         <p class="muted">Update your name, contact number, cycle type, or photo.</p>
         <a class="button secondary" href="{% url 'profile' %}">View profile</a>
     </section>
-
-    <section class="card">
-        <h2>Reminders</h2>
-        <p class="muted">You will get a heads-up 2 to 3 days before your predicted start date
-           so you can restock supplies and prepare.</p>
-    </section>
 </div>
+
+<p class="small muted">CyclePrep estimates are for planning ahead only and are not medical advice.</p>
 {% endblock %}

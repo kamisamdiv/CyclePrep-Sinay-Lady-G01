@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
+from django.utils import timezone
+
+from cycles.models import CycleLog
+from cycles.predictions import average_cycle_length, current_status, predict_next_period
 
 from .decorators import get_profile, role_required
 from .forms import ProfileUpdateForm, RegistrationForm, UserUpdateForm
@@ -63,7 +67,24 @@ def dashboard_redirect(request):
 
 @role_required(Profile.Role.MEMBER)
 def member_dashboard(request):
-    return render(request, 'dashboards/member.html', {'profile': get_profile(request.user)})
+    profile = get_profile(request.user)
+    today = timezone.localdate()
+    logs = list(request.user.cycle_logs.all())
+
+    context = {
+        'profile': profile,
+        'today': today,
+        'recent_logs': logs[:3],
+        'log_count': len(logs),
+        'ongoing_log': next((log for log in logs if log.end_date is None), None),
+        'average_length': average_cycle_length(logs),
+    }
+    if profile.cycle_type == Profile.CycleType.REGULAR:
+        context['prediction'] = predict_next_period(logs, today)
+    else:
+        context['status'] = current_status(logs, today)
+
+    return render(request, 'dashboards/member.html', context)
 
 
 @role_required(Profile.Role.ADMIN)
@@ -76,6 +97,10 @@ def admin_dashboard(request):
         'regular_count': members.filter(cycle_type=Profile.CycleType.REGULAR).count(),
         'irregular_count': members.filter(cycle_type=Profile.CycleType.IRREGULAR).count(),
         'users': User.objects.select_related('profile').order_by('-date_joined'),
+        'total_logs': CycleLog.objects.count(),
+        'members_logging': CycleLog.objects.values('user').distinct().count(),
+        'ongoing_logs': CycleLog.objects.filter(end_date__isnull=True).count(),
+        'average_cycle': _average_cycle_for_all_members(),
     }
     return render(request, 'dashboards/admin.html', context)
 
@@ -112,3 +137,16 @@ def profile_edit(request):
         'accounts/profile_edit.html',
         {'user_form': user_form, 'profile_form': profile_form},
     )
+
+
+def _average_cycle_for_all_members():
+    """Average cycle length across members who have at least 2 logs."""
+    logs_by_user = {}
+    for log in CycleLog.objects.only('user_id', 'start_date'):
+        logs_by_user.setdefault(log.user_id, []).append(log)
+
+    averages = [average_cycle_length(logs) for logs in logs_by_user.values()]
+    averages = [value for value in averages if value]
+    if not averages:
+        return None
+    return round(sum(averages) / len(averages))
