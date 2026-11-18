@@ -6,7 +6,8 @@
 <div class="page-header">
     <div>
         <h1>My cycle logs</h1>
-        <p class="muted">Every period you have logged, newest first.</p>
+        <p class="muted">Every period you have logged, newest first.
+            {% if average_length %}Your average cycle is <strong>{{ average_length }} days</strong>.{% endif %}</p>
     </div>
     <a class="button" href="{% url 'cycle_create' %}">+ Log a period</a>
 </div>
@@ -20,6 +21,7 @@
                         <th>Start date</th>
                         <th>End date</th>
                         <th>Period length</th>
+                        <th>Cycle length</th>
                         <th>Symptoms</th>
                         <th>Notes</th>
                         <th>Actions</th>
@@ -31,6 +33,7 @@
                             <td>{{ log.start_date|date:"M j, Y" }}</td>
                             <td>{% if log.end_date %}{{ log.end_date|date:"M j, Y" }}{% else %}<span class="badge">Ongoing</span>{% endif %}</td>
                             <td>{% if log.period_length %}{{ log.period_length }} day{{ log.period_length|pluralize }}{% else %}-{% endif %}</td>
+                            <td>{% if log.cycle_length %}{{ log.cycle_length }} days{% else %}-{% endif %}</td>
                             <td>{% for symptom in log.symptoms.all %}<span class="tag">{{ symptom.name }}</span>{% empty %}-{% endfor %}</td>
                             <td>{{ log.notes|default:"-"|truncatechars:40 }}</td>
                             <td class="actions">
