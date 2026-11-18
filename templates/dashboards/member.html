@@ -21,9 +21,10 @@
     </section>
 
     <section class="card">
-        <h2>Log a cycle</h2>
+        <h2>Log a period</h2>
         <p class="muted">Record a start and end date in a few seconds.</p>
-        <button class="button" type="button" disabled>Coming soon</button>
+        <a class="button" href="{% url 'cycle_create' %}">Log a period</a>
+        <a class="button secondary" href="{% url 'cycle_list' %}">My logs</a>
     </section>
 
     <section class="card">
