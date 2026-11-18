@@ -29,6 +29,25 @@
     </section>
 </div>
 
+<h2 class="section-title">Cycle tracking</h2>
+<div class="grid">
+    <section class="card">
+        <h2>Periods logged</h2>
+        <p class="stat">{{ total_logs }}</p>
+        <p class="muted">{{ ongoing_logs }} ongoing right now</p>
+    </section>
+    <section class="card">
+        <h2>Members logging</h2>
+        <p class="stat">{{ members_logging }}</p>
+        <p class="muted">of {{ member_count }} member{{ member_count|pluralize }}</p>
+    </section>
+    <section class="card">
+        <h2>Average cycle</h2>
+        <p class="stat">{% if average_cycle %}{{ average_cycle }} days{% else %}-{% endif %}</p>
+        <p class="muted">members with 2 or more logs</p>
+    </section>
+</div>
+
 <section class="card">
     <h2>Cycle logs</h2>
     <p class="muted">See the periods members have logged (read-only).</p>

@@ -8,13 +8,21 @@ from accounts.models import Profile
 
 from .forms import CycleLogForm
 from .models import CycleLog
+from .predictions import average_cycle_length
 
 
 @role_required(Profile.Role.MEMBER)
 def cycle_list(request):
     """Read: the member's own cycle logs, newest first."""
-    logs = request.user.cycle_logs.prefetch_related('symptoms')
-    return render(request, 'cycles/cycle_list.html', {'logs': logs})
+    logs = list(request.user.cycle_logs.prefetch_related('symptoms'))
+    # Cycle length = days from this start date to the next logged start date
+    for newer, older in zip(logs, logs[1:]):
+        older.cycle_length = (newer.start_date - older.start_date).days
+    return render(
+        request,
+        'cycles/cycle_list.html',
+        {'logs': logs, 'average_length': average_cycle_length(logs)},
+    )
 
 
 @role_required(Profile.Role.MEMBER)
