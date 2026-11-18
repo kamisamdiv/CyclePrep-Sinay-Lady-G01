@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}My Cycle Logs | CyclePrep{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>My cycle logs</h1>
+        <p class="muted">Every period you have logged, newest first.</p>
+    </div>
+    <a class="button" href="{% url 'cycle_create' %}">+ Log a period</a>
+</div>
+
+<section class="card">
+    {% if logs %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Period length</th>
+                        <th>Symptoms</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>{{ log.start_date|date:"M j, Y" }}</td>
+                            <td>{% if log.end_date %}{{ log.end_date|date:"M j, Y" }}{% else %}<span class="badge">Ongoing</span>{% endif %}</td>
+                            <td>{% if log.period_length %}{{ log.period_length }} day{{ log.period_length|pluralize }}{% else %}-{% endif %}</td>
+                            <td>{% for symptom in log.symptoms.all %}<span class="tag">{{ symptom.name }}</span>{% empty %}-{% endfor %}</td>
+                            <td>{{ log.notes|default:"-"|truncatechars:40 }}</td>
+                            <td class="actions">
+                                <a href="{% url 'cycle_update' log.pk %}">Edit</a>
+                                <a class="danger-link" href="{% url 'cycle_delete' log.pk %}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>You have not logged a period yet.</p>
+            <a class="button" href="{% url 'cycle_create' %}">Log your first period</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

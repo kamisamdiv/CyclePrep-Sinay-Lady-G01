@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Cycle Log | CyclePrep{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+    <h1>Delete this log?</h1>
+    <p>
+        Period from <strong>{{ log.start_date|date:"F j, Y" }}</strong>
+        {% if log.end_date %}to <strong>{{ log.end_date|date:"F j, Y" }}</strong>{% else %}(ongoing){% endif %}.
+    </p>
+    <p class="muted">This cannot be undone. Your predictions will be recalculated without it.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="button danger" type="submit">Yes, delete it</button>
+        <a class="button secondary" href="{% url 'cycle_list' %}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

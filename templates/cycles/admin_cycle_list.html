@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}All Cycle Logs | CyclePrep{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>All cycle logs</h1>
+        <p class="muted">Read-only view of every member's logs.</p>
+    </div>
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by name or username">
+        <button class="button secondary" type="submit">Search</button>
+    </form>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Period length</th>
+                    <th>Symptoms</th>
+                    <th>Logged on</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.user.get_full_name|default:log.user.username }}<br><small class="muted">@{{ log.user.username }}</small></td>
+                        <td>{{ log.start_date|date:"M j, Y" }}</td>
+                        <td>{% if log.end_date %}{{ log.end_date|date:"M j, Y" }}{% else %}<span class="badge">Ongoing</span>{% endif %}</td>
+                        <td>{% if log.period_length %}{{ log.period_length }} day{{ log.period_length|pluralize }}{% else %}-{% endif %}</td>
+                        <td>{% for symptom in log.symptoms.all %}<span class="tag">{{ symptom.name }}</span>{% empty %}-{% endfor %}</td>
+                        <td>{{ log.created_at|date:"M j, Y" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">{% if query %}No logs match "{{ query }}".{% else %}No cycle logs yet.{% endif %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
