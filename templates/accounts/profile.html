@@ -17,19 +17,24 @@
     </div>
 
     <dl class="details">
-        <dt>Email</dt>
-        <dd>{{ user.email|default:"Not set" }}</dd>
-
-        <dt>Contact number</dt>
-        <dd>{{ profile.contact_number|default:"Not set" }}</dd>
-
+        <div>
+            <dt>Email</dt>
+            <dd>{{ user.email|default:"Not set" }}</dd>
+        </div>
+        <div>
+            <dt>Contact number</dt>
+            <dd>{{ profile.contact_number|default:"Not set" }}</dd>
+        </div>
         {% if profile.role == 'member' %}
-            <dt>Cycle type</dt>
-            <dd>{{ profile.get_cycle_type_display }}</dd>
+            <div>
+                <dt>Cycle type</dt>
+                <dd>{{ profile.get_cycle_type_display }}</dd>
+            </div>
         {% endif %}
-
-        <dt>Member since</dt>
-        <dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+        <div>
+            <dt>Member since</dt>
+            <dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+        </div>
     </dl>
 
     <a class="button" href="{% url 'profile_edit' %}">Edit profile</a>

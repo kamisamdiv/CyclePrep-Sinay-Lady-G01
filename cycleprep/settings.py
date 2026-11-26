@@ -121,5 +121,18 @@ LOGIN_REDIRECT_URL = 'dashboard'    # after login, go to the role-based redirect
 LOGOUT_REDIRECT_URL = 'login'
 
 
+# Email (period heads-up reminders: python manage.py send_reminders)
+# The default console backend prints emails in the terminal, so no real
+# account is needed during development. Set the SMTP values in .env to send
+# real emails (for example a Gmail address with an App Password).
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'CyclePrep <no-reply@cycleprep.local>')
+
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

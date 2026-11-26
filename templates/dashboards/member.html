@@ -3,9 +3,14 @@
 {% block title %}My Dashboard | CyclePrep{% endblock %}
 
 {% block content %}
-<h1>Hello, {{ user.first_name|default:user.username }}</h1>
-<p class="muted">Member dashboard · Cycle type: {{ profile.get_cycle_type_display }}
-   (<a href="{% url 'profile_edit' %}">change</a>)</p>
+<div class="page-header">
+    <div>
+        <h1>Hello, <span class="accent">{{ user.first_name|default:user.username }}!</span></h1>
+        <p class="muted">Today is {{ today|date:"l, F j" }} · {{ profile.get_cycle_type_display }} cycle
+           (<a href="{% url 'profile_edit' %}">change</a>)</p>
+    </div>
+    <a class="button" href="{% url 'cycle_create' %}">+ Log a period</a>
+</div>
 
 {% if prediction and prediction.show_reminder %}
     <div class="reminder">
@@ -77,7 +82,8 @@
         </section>
     {% endif %}
 
-    <section class="card">
+    <section class="card tile-morning">
+        <span class="tile-icon" aria-hidden="true">📅</span>
         <h2>Log a period</h2>
         <p class="muted">Takes a few seconds. The start date is already set to today.</p>
         <a class="button" href="{% url 'cycle_create' %}">Log a period</a>
@@ -86,7 +92,8 @@
         </p>
     </section>
 
-    <section class="card">
+    <section class="card tile-night">
+        <span class="tile-icon" aria-hidden="true">🌙</span>
         <h2>Recent logs</h2>
         {% if recent_logs %}
             <ul class="plain-list">
@@ -103,7 +110,8 @@
         {% endif %}
     </section>
 
-    <section class="card">
+    <section class="card tile-mint">
+        <span class="tile-icon" aria-hidden="true">🌸</span>
         <h2>My profile</h2>
         <p class="muted">Update your name, contact number, cycle type, or photo.</p>
         <a class="button secondary" href="{% url 'profile' %}">View profile</a>
