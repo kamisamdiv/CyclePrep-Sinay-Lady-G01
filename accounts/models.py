@@ -20,6 +20,9 @@ class Profile(models.Model):
     )
     contact_number = models.CharField(max_length=20, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+    # Expected start date of the period we last emailed a heads-up about,
+    # so the reminder command never sends the same reminder twice.
+    last_reminder_for = models.DateField(null=True, blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
