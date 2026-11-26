@@ -7,22 +7,27 @@
 {% endblock %}
 
 {% block content %}
-<h1>Admin dashboard</h1>
-<p class="muted">Overview of CyclePrep accounts.</p>
+<div class="page-header">
+    <div>
+        <h1>Admin <span class="accent">dashboard</span></h1>
+        <p class="muted">Overview of CyclePrep accounts and cycle tracking.</p>
+    </div>
+    <a class="button" href="{% url 'cycle_admin_list' %}">View all cycle logs</a>
+</div>
 
 <div class="grid">
-    <section class="card">
+    <section class="card highlight">
         <h2>Total users</h2>
         <p class="stat">{{ total_users }}</p>
         <p class="muted">{{ member_count }} member{{ member_count|pluralize }},
            {{ admin_count }} admin{{ admin_count|pluralize }}</p>
     </section>
-    <section class="card">
+    <section class="card tile-morning">
         <h2>Regular cycles</h2>
         <p class="stat">{{ regular_count }}</p>
         <p class="muted">members</p>
     </section>
-    <section class="card">
+    <section class="card tile-night">
         <h2>Irregular cycles</h2>
         <p class="stat">{{ irregular_count }}</p>
         <p class="muted">members</p>

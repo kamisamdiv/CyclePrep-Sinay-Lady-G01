@@ -3,15 +3,38 @@
 {% block title %}CyclePrep: Period Prep Tracker{% endblock %}
 
 {% block content %}
-<section class="card">
-    <h1>CyclePrep</h1>
-    <p>A simple heads-up before your period arrives, so you can restock supplies,
-       prepare pain relief, and plan around exams and activities.</p>
-    {% if user.is_authenticated %}
-        <a class="button" href="{% url 'dashboard' %}">Go to my dashboard</a>
-    {% else %}
-        <a class="button" href="{% url 'register' %}">Create an account</a>
-        <a class="button secondary" href="{% url 'login' %}">Log in</a>
-    {% endif %}
+<section class="card hero">
+    <div>
+        <h1>Never get caught <span class="accent">off guard</span> again.</h1>
+        <p>A simple heads-up before your period arrives, so you can restock supplies,
+           prepare pain relief, and plan around exams and activities.</p>
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a class="button" href="{% url 'dashboard' %}">Go to my dashboard</a>
+            {% else %}
+                <a class="button" href="{% url 'register' %}">Create an account</a>
+                <a class="button secondary" href="{% url 'login' %}">Log in</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span></span><span></span><span></span></div>
 </section>
+
+<div class="feature-grid">
+    <section class="card tile-morning">
+        <span class="tile-icon" aria-hidden="true">📅</span>
+        <h2>Log in seconds</h2>
+        <p class="muted">Save the start date, end date, symptoms, and notes for each period.</p>
+    </section>
+    <section class="card">
+        <span class="tile-icon" aria-hidden="true">🔮</span>
+        <h2>Know what's next</h2>
+        <p class="muted">See your next expected period, or your likely phase if your cycle is irregular.</p>
+    </section>
+    <section class="card tile-night">
+        <span class="tile-icon" aria-hidden="true">🔔</span>
+        <h2>Get a heads-up</h2>
+        <p class="muted">A reminder 3 days before your expected window, on your dashboard and by email.</p>
+    </section>
+</div>
 {% endblock %}
