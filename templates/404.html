@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Page not found | CyclePrep{% endblock %}
+
+{% block content %}
+<section class="card form-card empty-state">
+    <p class="stat">404</p>
+    <h1>Page not found</h1>
+    <p class="muted">The page you are looking for does not exist, or you do not have access to it.</p>
+    {% if user.is_authenticated %}
+        <a class="button" href="{% url 'dashboard' %}">Back to my dashboard</a>
+    {% else %}
+        <a class="button" href="{% url 'home' %}">Go to the home page</a>
+    {% endif %}
+</section>
+{% endblock %}
