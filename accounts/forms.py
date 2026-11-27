@@ -29,6 +29,14 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Plain-text help, so the template never needs |safe
+        self.fields['password1'].help_text = (
+            'At least 8 characters. Do not use only numbers, a common password, '
+            'or something too similar to your username or name.'
+        )
+
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()
         if User.objects.filter(email__iexact=email).exists():

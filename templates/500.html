@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something went wrong | CyclePrep</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {# Rendered without a request, so it does not extend base.html or use the logged-in user. #}
+    <nav class="navbar">
+        <a class="brand" href="/">CyclePrep</a>
+    </nav>
+    <main class="container">
+        <section class="card form-card empty-state">
+            <p class="stat">500</p>
+            <h1>Something went wrong</h1>
+            <p class="muted">An unexpected error happened on our side. Your data is safe. Please try again in a moment.</p>
+            <a class="button" href="/">Go to the home page</a>
+        </section>
+    </main>
+    <footer class="footer">CyclePrep: Period Prep Tracker</footer>
+</body>
+</html>

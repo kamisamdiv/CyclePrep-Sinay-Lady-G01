@@ -29,6 +29,15 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# Browser security headers and cookies
+X_FRAME_OPTIONS = 'DENY'                 # the site cannot be shown inside another site's frame
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SESSION_COOKIE_HTTPONLY = True           # JavaScript cannot read the session cookie
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# Turn these on in .env once the site runs on HTTPS (they break plain http://)
+SESSION_COOKIE_SECURE = os.getenv('SECURE_COOKIES', 'False') == 'True'
+CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -132,6 +141,16 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'CyclePrep <no-reply@cycleprep.local>')
+
+
+# Logging: with DEBUG=False, visitors see the custom 500 page and the
+# real error is printed in the terminal instead of a traceback page.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'loggers': {'django': {'handlers': ['console'], 'level': 'WARNING'}},
+}
 
 
 # Default primary key field type
